@@ -1,6 +1,7 @@
 package locker_test
 
 import (
+	"context"
 	"log"
 	"sync"
 	"testing"
@@ -9,7 +10,7 @@ import (
 	"github.com/save95/go-utils/locker"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v8"
 )
 
 var _redisClient *redis.Client
@@ -21,7 +22,8 @@ func init() {
 		DB:       0,
 	})
 
-	_, err := _redisClient.Ping().Result()
+	ctx := context.Background()
+	_, err := _redisClient.Ping(ctx).Result()
 	if err != nil {
 		log.Fatalf("err: %+v", err)
 	}

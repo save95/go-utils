@@ -1,11 +1,12 @@
 package locker
 
 import (
+	"context"
 	"fmt"
 	"math/rand"
 	"time"
 
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v8"
 	"github.com/save95/xerror"
 )
 
@@ -32,7 +33,8 @@ func NewDistributedRedisLock(client *redis.Client) ILocker {
 
 func (d *distributedRedisLock) Lock(key string) error {
 	// 加锁
-	set, err := d.client.SetNX(key, d.lockVal, d.timeout).Result()
+	ctx := context.Background()
+	set, err := d.client.SetNX(ctx, key, d.lockVal, d.timeout).Result()
 	if err != nil {
 		return xerror.Wrap(err, "get lock failed")
 	}
@@ -47,7 +49,8 @@ func (d *distributedRedisLock) Lock(key string) error {
 
 func (d *distributedRedisLock) UnLock(key string) error {
 	// 获得锁信息
-	val, err := d.client.Get(key).Result()
+	ctx := context.Background()
+	val, err := d.client.Get(ctx, key).Result()
 	if nil != err {
 		return xerror.Wrap(err, "found lock failed")
 	}
@@ -58,7 +61,7 @@ func (d *distributedRedisLock) UnLock(key string) error {
 	}
 
 	// 删除锁
-	err = d.client.Del(key).Err()
+	err = d.client.Del(ctx, key).Err()
 	if nil != err {
 		return xerror.Wrap(err, "unlock failed")
 	}

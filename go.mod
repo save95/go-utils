@@ -3,7 +3,7 @@ module github.com/save95/go-utils
 go 1.13
 
 require (
-	github.com/go-redis/redis v6.15.9+incompatible
+	github.com/go-redis/redis/v8 v8.9.0
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/onsi/gomega v1.12.0 // indirect
 	github.com/pkg/errors v0.9.1
