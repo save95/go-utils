@@ -9,6 +9,7 @@ import (
 )
 
 // CompressPath 压缩一个指定目录
+// 将 src 目录打包成 dst 文件
 func CompressPath(dst, src string) error {
 	// 创建准备写入的文件
 	fw, err := os.Create(dst)
@@ -75,4 +76,74 @@ func CompressPath(dst, src string) error {
 
 		return nil
 	})
+}
+
+// DecompressionBy 通过自定义函数解压文件
+// 将在 fun 函数返回 error 时中断解压，并返回 error
+func DecompressionBy(srcFile string, fun func(file *zip.File) error) error {
+	zr, err := zip.OpenReader(srcFile)
+	defer func() {
+		_ = zr.Close()
+	}()
+	if err != nil {
+		return err
+	}
+
+	// 遍历 zr ，将文件写入到磁盘
+	for _, file := range zr.File {
+		if err := fun(file); nil != err {
+			return err
+		}
+	}
+	return nil
+}
+
+// Decompression 解压 zip 包
+// 将 srcFile 压缩包解压至 dstDir
+func Decompression(srcFile, dstDir string) error {
+	// 如果解压后不是放在当前目录就按照保存目录去创建目录
+	if dstDir != "" {
+		if err := os.MkdirAll(dstDir, 0755); err != nil {
+			return err
+		}
+	}
+
+	return DecompressionBy(srcFile, func(file *zip.File) error {
+		filename := filepath.Join(dstDir, file.Name)
+
+		// 如果是目录，就创建目录
+		// 因为是目录，跳过当前循环，因为后面都是文件的处理
+		if file.FileInfo().IsDir() {
+			return os.MkdirAll(filename, file.Mode())
+		}
+
+		return WriteFile(file, filename)
+	})
+}
+
+// WriteFile 将 zip 中文件写入磁盘
+func WriteFile(file *zip.File, filename string) error {
+	// 获取到 Reader
+	fr, err := file.Open()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		_ = fr.Close()
+	}()
+
+	// 创建要写出的文件对应的 Write
+	fw, err := os.OpenFile(filename, os.O_CREATE|os.O_RDWR|os.O_TRUNC, file.Mode())
+	if err != nil {
+		return err
+	}
+	defer func() {
+		_ = fw.Close()
+	}()
+
+	if _, err = io.Copy(fw, fr); err != nil {
+		return err
+	}
+
+	return nil
 }
