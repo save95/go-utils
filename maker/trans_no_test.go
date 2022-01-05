@@ -18,8 +18,8 @@ func TestTransNo(t *testing.T) {
 	userIdStr := strconv.Itoa(userId)
 
 	assert.Equal(t, len(transNo), 24)
-	assert.Equal(t, transNo[0:2], fmt.Sprintf("%d", time.Now().Year()-2000))
-	assert.Equal(t, transNo[2:5], fmt.Sprintf("%d", time.Now().YearDay()))
+	assert.Equal(t, transNo[0:2], fmt.Sprintf("%02d", time.Now().Year()-2000))
+	assert.Equal(t, transNo[2:5], fmt.Sprintf("%03d", time.Now().YearDay()))
 	assert.Equal(t, transNo[15:19], fmt.Sprintf(userIdStr[len(userIdStr)-4:]))
 }
 
@@ -32,8 +32,8 @@ func TestTransNoWith(t *testing.T) {
 	userIdStr := fmt.Sprintf("%05d", userId)
 	transNo2 := TransNoWith(uint(userId), 30)
 	assert.Equal(t, len(transNo2), 30)
-	assert.Equal(t, transNo2[0:2], fmt.Sprintf("%d", time.Now().Year()-2000))
-	assert.Equal(t, transNo2[2:5], fmt.Sprintf("%d", time.Now().YearDay()))
+	assert.Equal(t, transNo2[0:2], fmt.Sprintf("%02d", time.Now().Year()-2000))
+	assert.Equal(t, transNo2[2:5], fmt.Sprintf("%03d", time.Now().YearDay()))
 	assert.Equal(t, transNo[len(transNo)-9:len(transNo)-5], fmt.Sprintf(userIdStr[len(userIdStr)-4:]))
 }
 

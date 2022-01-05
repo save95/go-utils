@@ -45,7 +45,7 @@ func TransNoWith(uid, length uint) string {
 	userId := fmt.Sprintf("%06d", uid)
 
 	return fmt.Sprintf(
-		"%d%d%s%s%05d",
+		"%02d%03d%s%s%05d",
 		now.Year()-2000,
 		now.YearDay(),
 		rn,
