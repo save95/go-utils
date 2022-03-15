@@ -7,8 +7,10 @@ import (
 )
 
 func TestBool(t *testing.T) {
-	assertTrue(t, "true", "TRue", "yes", "1", 1, 2, 3.14)
-	assertFalse(t, "false", "FALSE", "no", "", "0", 0, -1, -1.23)
+	tr := true
+	fa := false
+	assertTrue(t, tr, &tr, "true", "TRue", "yes", "1", 1, 2, 3.14)
+	assertFalse(t, fa, &fa, "false", "FALSE", "no", "", "0", 0, -1, -1.23)
 	assertBooleanError(t, "hello", "world", struct{}{}, []int{})
 }
 

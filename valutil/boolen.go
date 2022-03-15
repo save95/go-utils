@@ -22,6 +22,9 @@ func Bool(any interface{}) (bool, error) {
 	if v, ok := any.(bool); ok {
 		return v, nil
 	}
+	if v, ok := any.(*bool); ok {
+		return *v, nil
+	}
 
 	if v, ok := any.(string); ok {
 		switch strings.ToLower(v) {
