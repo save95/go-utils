@@ -1,5 +1,10 @@
 package strutil
 
+import (
+	"math/rand"
+	"strings"
+)
+
 // Reverse 反转字符串
 func Reverse(s string) string {
 	runes := []rune(s)
@@ -7,4 +12,14 @@ func Reverse(s string) string {
 		runes[from], runes[to] = runes[to], runes[from]
 	}
 	return string(runes)
+}
+
+// Shuffle 打乱字符串
+func Shuffle(s string) string {
+	ss := strings.Split(s, "")
+	rand.Shuffle(len(ss), func(i, j int) {
+		ss[i], ss[j] = ss[j], ss[i]
+	})
+
+	return strings.Join(ss, "")
 }

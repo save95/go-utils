@@ -29,6 +29,7 @@ func TransNoWith(uid, length uint) string {
 	rnLen := int(math.Min(32, math.Max(16, float64(length)))) - baseLen
 
 	bytes := make([]byte, 32)
+	rand.Seed(time.Now().UnixNano())
 	rand.Read(bytes)
 	symbolsByteLength := byte(len(_symbols))
 	for i, b := range bytes {

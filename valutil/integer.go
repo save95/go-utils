@@ -2,6 +2,7 @@ package valutil
 
 import (
 	"errors"
+	"math/rand"
 	"strconv"
 )
 
@@ -114,4 +115,9 @@ func Int(any interface{}) (int, error) {
 	}
 
 	return 0, errors.New("interface convert to int failed")
+}
+
+// RandInt 生成随机范围的整数
+func RandInt(min int, max int) int {
+	return min + rand.Intn(max-min)
 }

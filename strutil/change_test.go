@@ -17,3 +17,9 @@ func TestReverse(t *testing.T) {
 		assert.Equal(t, Reverse(s1), s2)
 	}
 }
+
+func TestShuffle(t *testing.T) {
+	src := "this is test string"
+	assert.Equal(t, len(src), len(Shuffle(src)))
+	assert.NotEqual(t, src, Shuffle(src))
+}

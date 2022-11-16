@@ -2,7 +2,7 @@ package strutil
 
 import "strings"
 
-// Snake snake string, XxYy to xx_yy , XxYY to xx_yy
+// Snake string, XxYy to xx_yy , XxYY to xx_yy
 func Snake(s string) string {
 	data := make([]byte, 0, len(s)*2)
 	j := false
