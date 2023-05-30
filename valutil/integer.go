@@ -4,6 +4,7 @@ import (
 	"errors"
 	"math/rand"
 	"strconv"
+	"time"
 )
 
 // Int 将任意值转成 int
@@ -119,5 +120,6 @@ func Int(any interface{}) (int, error) {
 
 // RandInt 生成随机范围的整数
 func RandInt(min int, max int) int {
+	rand.Seed(time.Now().UnixNano())
 	return min + rand.Intn(max-min)
 }

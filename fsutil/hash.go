@@ -5,6 +5,7 @@ import (
 	"crypto/sha1"
 	"encoding/base64"
 	"io"
+	"os"
 )
 
 const (
@@ -27,7 +28,7 @@ func calSha1(b []byte, r io.Reader) ([]byte, error) {
 	return h.Sum(b), nil
 }
 
-// QiNiuHash 获得文件内容的 hash
+// QiNiuHash 获得内容的 hash
 func QiNiuHash(f io.Reader, fsize int64) (etag string, err error) {
 	blockCnt := blockCount(fsize)
 	sha1Buf := make([]byte, 0, 21)
@@ -52,4 +53,22 @@ func QiNiuHash(f io.Reader, fsize int64) (etag string, err error) {
 	}
 	etag = base64.URLEncoding.EncodeToString(sha1Buf)
 	return
+}
+
+// QiNiuFileHash 获得文件内容的 hash
+func QiNiuFileHash(filepath string) (string, error) {
+	f, err := os.Open(filepath)
+	if nil != err {
+		return "", err
+	}
+	defer func() {
+		_ = f.Close()
+	}()
+
+	fi, err := f.Stat()
+	if nil != err {
+		return "", err
+	}
+
+	return QiNiuHash(f, fi.Size())
 }
