@@ -41,7 +41,7 @@ func (d *distributedRedisLock) Lock(key string) error {
 
 	// 锁被占用
 	if !set {
-		return xerror.New("lock is occupied")
+		return ErrorLockOccupied
 	}
 
 	return nil
