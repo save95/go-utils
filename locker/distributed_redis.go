@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"math/rand"
+	"strings"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -31,7 +32,15 @@ func NewDistributedRedisLock(client *redis.Client) ILocker {
 	}
 }
 
+func (d *distributedRedisLock) wrapKey(key string) string {
+	if strings.HasPrefix(key, "lock:") {
+		return key
+	}
+	return fmt.Sprintf("lock:%s", key)
+}
+
 func (d *distributedRedisLock) Lock(key string) error {
+	key = d.wrapKey(key)
 	// 加锁
 	ctx := context.Background()
 	set, err := d.client.SetNX(ctx, key, d.lockVal, d.timeout).Result()
@@ -48,6 +57,7 @@ func (d *distributedRedisLock) Lock(key string) error {
 }
 
 func (d *distributedRedisLock) UnLock(key string) error {
+	key = d.wrapKey(key)
 	// 获得锁信息
 	ctx := context.Background()
 	val, err := d.client.Get(ctx, key).Result()
