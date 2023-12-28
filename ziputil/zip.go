@@ -101,6 +101,12 @@ func DecompressionBy(srcFile string, fun func(file *zip.File) error) error {
 // Decompression 解压 zip 包
 // 将 srcFile 压缩包解压至 dstDir
 func Decompression(srcFile, dstDir string) error {
+	return DecompressionWithIgnore(srcFile, dstDir)
+}
+
+// DecompressionWithIgnore 解压 zip 包
+// 将 srcFile 压缩包解压至 dstDir，解压过程中忽略 ignores 的文件和目录
+func DecompressionWithIgnore(srcFile, dstDir string, ignores ...string) error {
 	// 如果解压后不是放在当前目录就按照保存目录去创建目录
 	if dstDir != "" {
 		if err := os.MkdirAll(dstDir, 0755); err != nil {
@@ -109,6 +115,15 @@ func Decompression(srcFile, dstDir string) error {
 	}
 
 	return DecompressionBy(srcFile, func(file *zip.File) error {
+		// 忽略跳过的文件
+		if ignores != nil && len(ignores) > 0 {
+			for _, ignore := range ignores {
+				if strings.HasPrefix(file.Name, strings.TrimSpace(ignore)) {
+					return nil
+				}
+			}
+		}
+
 		filename := filepath.Join(dstDir, file.Name)
 
 		// 如果是目录，就创建目录
